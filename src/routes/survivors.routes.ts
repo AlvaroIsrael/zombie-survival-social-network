@@ -41,4 +41,20 @@ survivorsRouter.patch(
   }
 );
 
+survivorsRouter.post(
+  '/:reportedBy/infection',
+  celebrate({
+    [Segments.PARAMS]: {
+      reportedBy: Joi.number().required()
+    },
+    [Segments.BODY]: {
+      infectedId: Joi.number().required()
+    },
+  }),
+  async (request, response) => {
+    await survivorsController.infection(request, response);
+    response.end();
+  }
+);
+
 export default survivorsRouter;
