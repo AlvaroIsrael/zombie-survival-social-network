@@ -2,7 +2,7 @@ import Knex, { SchemaBuilder } from 'knex';
 
 export async function up(knex: Knex): Promise<SchemaBuilder> {
   return knex.schema.createTable('inventories', tableBuilder => {
-    tableBuilder.increments('iventoryId').primary();
+    tableBuilder.increments('inventoryId').primary();
     tableBuilder.string('survivorId').notNullable().references('survivorId').inTable('survivors');
     tableBuilder.string('itemId').notNullable().references('itemId').inTable('items');
     tableBuilder.string('iventoryQuantity').notNullable();

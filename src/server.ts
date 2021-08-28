@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import log from 'debug';
 import app from './app';
 
 const getPort = (url: string | undefined): string => {
@@ -10,5 +11,5 @@ const getPort = (url: string | undefined): string => {
 const port = getPort(process.env.APP_API_URL);
 
 app.listen(port, () => {
-  console.log(`🔥 Server running on port ${port} ! 🔥`);
+  log.log(`🔥 Server running on port ${port} ! 🔥`);
 });
