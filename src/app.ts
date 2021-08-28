@@ -21,15 +21,13 @@ app.use(errors());
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   if (err instanceof AppError) {
     return response.status(err.statusCode).json({
-      status: 'error',
-      message: err.message,
+      message: err.message
     });
   }
 
   /* Minimun of global error handling ensuring our app will never let an unhandled exception break. */
   return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    status: 'error',
-    message: 'Internal server error.',
+    message: 'Internal server error.'
   });
 });
 

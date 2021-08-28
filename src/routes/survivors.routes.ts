@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { celebrate, Segments, Joi } from 'celebrate';
+import { celebrate, Joi, Segments } from 'celebrate';
 import SurvivorsController from '../controllers/SurvivorsController';
 
 const survivorsRouter = Router();
@@ -15,12 +15,30 @@ survivorsRouter.post(
       sex: Joi.string().required(),
       latitude: Joi.number().required(),
       longitude: Joi.number().required(),
-      infected: Joi.boolean().required(),
-    },
+      infected: Joi.boolean().required()
+    }
   }),
   async (request, response) => {
     await survivorsController.create(request, response);
-  },
+    response.end();
+  }
+);
+
+survivorsRouter.patch(
+  '/:survivorId',
+  celebrate({
+    [Segments.BODY]: {
+      latitude: Joi.number().required(),
+      longitude: Joi.number().required()
+    },
+    [Segments.PARAMS]: {
+      survivorId: Joi.number().required()
+    }
+  }),
+  async (request, response) => {
+    await survivorsController.locationUpdate(request, response);
+    response.end();
+  }
 );
 
 export default survivorsRouter;

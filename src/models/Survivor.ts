@@ -1,6 +1,6 @@
 import { ISurvivorRequest } from 'interfaces/ISurvivorRequest';
 
-abstract class Survivor {
+class Survivor {
   name: string;
 
   age: number;
@@ -13,7 +13,7 @@ abstract class Survivor {
 
   infected: boolean;
 
-  protected constructor({ name, age, sex, latitude, longitude, infected }: ISurvivorRequest) {
+  constructor({ name, age, sex, latitude, longitude, infected }: ISurvivorRequest) {
     this.name = name;
     this.age = age;
     this.sex = sex;
