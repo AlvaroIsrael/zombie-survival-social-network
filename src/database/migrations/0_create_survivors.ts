@@ -6,8 +6,8 @@ export async function up(knex: Knex): Promise<SchemaBuilder> {
     tableBuilder.string('survivorName').notNullable();
     tableBuilder.string('survivorAge').notNullable();
     tableBuilder.string('survivorSex').notNullable();
-    tableBuilder.string('survivorLatitude').notNullable();
-    tableBuilder.string('survivorLongitude').notNullable();
+    tableBuilder.float('survivorLatitude', 14, 10).notNullable();
+    tableBuilder.float('survivorLongitude', 14, 10).notNullable();
     tableBuilder.string('survivorInfected').notNullable();
     tableBuilder.string('createdAt').notNullable().defaultTo(knex.fn.now());
     tableBuilder.string('updatedAt').notNullable().defaultTo(knex.fn.now());
