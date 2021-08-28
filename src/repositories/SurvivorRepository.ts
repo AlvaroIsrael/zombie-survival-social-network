@@ -32,6 +32,11 @@ class SurvivorRepository {
       .where({ survivorId });
   }
 
+  /* Updates a survivor's infection status. */
+  public async infectedUpdate(survivorId: number): Promise<number> {
+    return this.connection('survivors').update({ survivorInfected: true }).where({ survivorId });
+  }
+
   /* Find ond survivor by it's id. */
   public async findOne(survivorId: number): Promise<Survivor | null> {
     const foundSurvivor = await this.connection('survivors')

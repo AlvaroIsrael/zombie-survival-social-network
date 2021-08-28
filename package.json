@@ -22,7 +22,8 @@
     "dev:server": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/server.ts",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand --coverage --watchAll=false --config=./src/config/jest.config.ts",
     "knex:seed": "npx knex seed:run --knexfile src/config/knexfile.ts",
-    "knex:migrate": "npx knex migrate:latest --knexfile src/config/knexfile.ts"
+    "knex:migrate": "npx knex migrate:latest --knexfile src/config/knexfile.ts",
+    "knex:rollback": "npx knex migrate:rollback --knexfile src/config/knexfile.ts"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",

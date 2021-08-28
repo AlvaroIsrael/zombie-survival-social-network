@@ -5,13 +5,19 @@ import SurvivorRepository from '../repositories/SurvivorRepository';
 import SurvivorCreationService from '../services/SurvivorCreationService';
 import SurvivorUpdateLocationService from '../services/SurvivorUpdateLocationService';
 import AppError from '../errors/AppError';
+import SurvivorInfectionService from '../services/SurvivorInfectionService';
+import InfectionsRepository from '../repositories/InfectionsRepository';
 
 class SurvivorsController {
   private survivorRepository = new SurvivorRepository();
 
+  private infectionsRepository = new InfectionsRepository();
+
   private survivorCreationService = new SurvivorCreationService(this.survivorRepository);
 
   private survivorUpdateLocationService = new SurvivorUpdateLocationService(this.survivorRepository);
+
+  private survivorInfectionService = new SurvivorInfectionService(this.survivorRepository, this.infectionsRepository);
 
   public async create(request: Request, response: Response): Promise<Response> {
     const { name, age, sex, latitude, longitude, infected }: ISurvivorRequest = request.body;
@@ -46,6 +52,25 @@ class SurvivorsController {
     }
 
     return response.status(StatusCodes.NO_CONTENT);
+  }
+
+  public async infection(request: Request, response: Response): Promise<Response> {
+    const reportedBy = Number(request.params.reportedBy);
+    const infectedId = Number(request.body.infectedId);
+
+    try {
+      await this.survivorInfectionService.execute({
+        reportedBy,
+        infectedId
+      });
+    } catch (e) {
+      if (e instanceof AppError) {
+        return response.status(e.statusCode).json({ erro: e.message });
+      }
+      return response.status(StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+
+    return response.status(StatusCodes.OK).json({ message: 'Infection reported' });
   }
 }
 
