@@ -13,6 +13,9 @@
       "@services/*": [
         "services/*"
       ],
+      "@config/*": [
+        "config/*"
+      ]
     },
     "esModuleInterop": true,
     "experimentalDecorators": true,
