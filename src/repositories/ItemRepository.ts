@@ -37,6 +37,23 @@ class ItemRepository {
 
     return item;
   }
+
+  /* Find one item by it's id. */
+  public async findOneById(itemId: number): Promise<Item | null> {
+    const foundSurvivor = await this.connection('items')
+      .select(['*'])
+      .from('items')
+      .where({ itemId })
+      .limit(1);
+
+    let item: Item | null = null;
+    foundSurvivor.forEach(itemInDataBase => {
+      const { name, type, value } = itemInDataBase;
+      item = new Item({ name, type, value });
+    });
+
+    return item;
+  }
 }
 
 export default ItemRepository;

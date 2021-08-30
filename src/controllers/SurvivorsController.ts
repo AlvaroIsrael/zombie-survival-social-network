@@ -1,21 +1,42 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { ISurvivorRequest } from 'interfaces/ISurvivorRequest';
+import { IInventoryItem } from 'interfaces/IInventoryItem';
+import InventoryRepository from '../repositories/InventoryRepository';
+import SurvivorItemUpdateService from '../services/SurvivorItemUpdateService';
 import SurvivorRepository from '../repositories/SurvivorRepository';
 import SurvivorCreationService from '../services/SurvivorCreationService';
 import SurvivorUpdateLocationService from '../services/SurvivorUpdateLocationService';
 import AppError from '../errors/AppError';
 import SurvivorInfectionService from '../services/SurvivorInfectionService';
 import InfectionsRepository from '../repositories/InfectionsRepository';
+import ItemRepository from '../repositories/ItemRepository';
+import SurvivorItemRemovalService from '../services/SurvivorItemRemovalService';
 
 class SurvivorsController {
   private survivorRepository = new SurvivorRepository();
 
   private infectionsRepository = new InfectionsRepository();
 
+  private itemRepository = new ItemRepository();
+
+  private inventoryRepository = new InventoryRepository();
+
   private survivorCreationService = new SurvivorCreationService(this.survivorRepository);
 
   private survivorUpdateLocationService = new SurvivorUpdateLocationService(this.survivorRepository);
+
+  private survivorInventoryUpdate = new SurvivorItemUpdateService(
+    this.survivorRepository,
+    this.itemRepository,
+    this.inventoryRepository
+  );
+
+  private survivorItemRemovalService = new SurvivorItemRemovalService(
+    this.survivorRepository,
+    this.itemRepository,
+    this.inventoryRepository
+  );
 
   private survivorInfectionService = new SurvivorInfectionService(this.survivorRepository, this.infectionsRepository);
 
@@ -71,6 +92,42 @@ class SurvivorsController {
     }
 
     return response.status(StatusCodes.OK).json({ message: 'Infection reported' });
+  }
+
+  public async inventoryUpdate(request: Request, response: Response): Promise<Response> {
+    const survivorId = Number(request.params.survivorId);
+    const { inventory } = request.body as { inventory: IInventoryItem[] };
+
+    try {
+      await this.survivorInventoryUpdate.execute({
+        survivorId,
+        inventory
+      });
+    } catch (e) {
+      if (e instanceof AppError) {
+        return response.status(e.statusCode).json({ erro: e.message });
+      }
+      return response.status(StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+    return response.status(StatusCodes.NO_CONTENT);
+  }
+
+  public async inventoryRemoval(request: Request, response: Response): Promise<Response> {
+    const survivorId = Number(request.params.survivorId);
+    const { inventory } = request.body as { inventory: IInventoryItem[] };
+
+    try {
+      await this.survivorItemRemovalService.execute({
+        survivorId,
+        inventory
+      });
+    } catch (e) {
+      if (e instanceof AppError) {
+        return response.status(e.statusCode).json({ erro: e.message });
+      }
+      return response.status(StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+    return response.status(StatusCodes.NO_CONTENT);
   }
 }
 
