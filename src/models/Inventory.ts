@@ -1,6 +1,8 @@
 import { IInventoryRequest } from 'interfaces/IInventoryRequest';
 
 class Inventory {
+  id: number;
+
   name: string;
 
   type: string;
@@ -9,7 +11,8 @@ class Inventory {
 
   quantity: number;
 
-  constructor({ name, type, value, quantity }: IInventoryRequest) {
+  constructor({ id, name, type, value, quantity }: IInventoryRequest) {
+    this.id = id;
     this.name = name;
     this.type = type;
     this.value = value;

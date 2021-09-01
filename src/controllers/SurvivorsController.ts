@@ -162,7 +162,7 @@ class SurvivorsController {
       }
       return response.status(StatusCodes.INTERNAL_SERVER_ERROR);
     }
-    return response.status(StatusCodes.OK);
+    return response.status(StatusCodes.ACCEPTED);
   }
 }
 
