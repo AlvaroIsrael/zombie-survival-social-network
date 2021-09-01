@@ -102,4 +102,36 @@ survivorsRouter.delete(
   },
 );
 
+survivorsRouter.post(
+  '/:survivorId/trade',
+  celebrate({
+    [Segments.PARAMS]: {
+      survivorId: Joi.number().required(),
+    },
+    [Segments.BODY]: {
+      buyerId: Joi.number().required(),
+      pick: Joi.array()
+        .items(
+          Joi.object().keys({
+            itemId: Joi.number().positive().required(),
+            quantity: Joi.number().positive().required(),
+          }),
+        )
+        .min(1),
+      pay: Joi.array()
+        .items(
+          Joi.object().keys({
+            itemId: Joi.number().positive().required(),
+            quantity: Joi.number().positive().required(),
+          }),
+        )
+        .min(1),
+    },
+  }),
+  async (request, response) => {
+    await survivorsController.trade(request, response);
+    response.end();
+  },
+);
+
 export default survivorsRouter;

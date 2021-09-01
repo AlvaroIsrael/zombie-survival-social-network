@@ -10,7 +10,7 @@ itemsRouter.post(
   celebrate({
     [Segments.BODY]: {
       name: Joi.string().required(),
-      type: Joi.string().valid('água', 'comida', 'medicamento', 'munição').required()
+      type: Joi.string().valid('agua', 'comida', 'medicamento', 'municao').required()
     }
   }),
   async (request, response) => {

@@ -14,7 +14,7 @@ class SurvivorItemUpdateService {
   constructor(
     survivorRepository: SurvivorRepository,
     itemRepository: ItemRepository,
-    inventoryRepository: InventoryRepository
+    inventoryRepository: InventoryRepository,
   ) {
     this.survivorRepository = survivorRepository;
     this.itemRepository = itemRepository;

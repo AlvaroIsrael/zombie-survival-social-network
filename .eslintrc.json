@@ -20,6 +20,7 @@
     "prettier"
   ],
   "rules": {
+    "semi": ["error", "always"],
     "no-param-reassign": "off",
     "prettier/prettier": "error",
     "import/extensions": [
