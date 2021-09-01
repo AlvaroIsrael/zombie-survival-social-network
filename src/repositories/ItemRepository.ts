@@ -15,7 +15,7 @@ class ItemRepository {
     const itemId = await this.connection('items').insert({
       itemName: name,
       itemType: type,
-      itemValue: value
+      itemValue: value,
     });
 
     return itemId[0];
@@ -23,11 +23,7 @@ class ItemRepository {
 
   /* Find one item by it's name. */
   public async findOne(itemName: string): Promise<Item | null> {
-    const foundSurvivor = await this.connection('items')
-      .select(['*'])
-      .from('items')
-      .where({ itemName })
-      .limit(1);
+    const foundSurvivor = await this.connection('items').select(['*']).from('items').where({ itemName }).limit(1);
 
     let item: Item | null = null;
     foundSurvivor.forEach(itemInDataBase => {
@@ -40,11 +36,7 @@ class ItemRepository {
 
   /* Find one item by it's id. */
   public async findOneById(itemId: number): Promise<Item | null> {
-    const foundSurvivor = await this.connection('items')
-      .select(['*'])
-      .from('items')
-      .where({ itemId })
-      .limit(1);
+    const foundSurvivor = await this.connection('items').select(['*']).from('items').where({ itemId }).limit(1);
 
     let item: Item | null = null;
     foundSurvivor.forEach(itemInDataBase => {

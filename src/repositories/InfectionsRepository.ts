@@ -1,7 +1,6 @@
 import Knex from 'knex';
 import { ISurvivorInfectionRequest } from 'interfaces/ISurvivorInfectionRequest';
 import connection from '../database/connection';
-import Survivor from 'models/Survivor';
 
 class InfectionsRepository {
   private readonly connection: Knex;
@@ -14,7 +13,7 @@ class InfectionsRepository {
   public async reportInfected({ reportedBy, infectedId }: ISurvivorInfectionRequest): Promise<number> {
     const infected = await this.connection('infections').insert({
       reportedBy,
-      infectedId
+      infectedId,
     });
 
     return infected[0];
