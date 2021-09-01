@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { ISurvivorRequest } from 'interfaces/ISurvivorRequest';
 import { IInventoryItem } from 'interfaces/IInventoryItem';
+import { ITrade } from 'interfaces/ITrade';
 import InventoryRepository from '../repositories/InventoryRepository';
 import SurvivorItemUpdateService from '../services/SurvivorItemUpdateService';
 import SurvivorRepository from '../repositories/SurvivorRepository';
@@ -12,6 +13,7 @@ import SurvivorInfectionService from '../services/SurvivorInfectionService';
 import InfectionsRepository from '../repositories/InfectionsRepository';
 import ItemRepository from '../repositories/ItemRepository';
 import SurvivorItemRemovalService from '../services/SurvivorItemRemovalService';
+import SurvivorTradeService from '../services/SurvivorTradeService';
 
 class SurvivorsController {
   private survivorRepository = new SurvivorRepository();
@@ -29,13 +31,26 @@ class SurvivorsController {
   private survivorInventoryUpdate = new SurvivorItemUpdateService(
     this.survivorRepository,
     this.itemRepository,
-    this.inventoryRepository
+    this.inventoryRepository,
   );
 
   private survivorItemRemovalService = new SurvivorItemRemovalService(
     this.survivorRepository,
     this.itemRepository,
-    this.inventoryRepository
+    this.inventoryRepository,
+  );
+
+  private survivorItemUpdateService = new SurvivorItemUpdateService(
+    this.survivorRepository,
+    this.itemRepository,
+    this.inventoryRepository,
+  );
+
+  private survivorTradeService = new SurvivorTradeService(
+    this.survivorRepository,
+    this.itemRepository,
+    this.inventoryRepository,
+    this.survivorItemUpdateService,
   );
 
   private survivorInfectionService = new SurvivorInfectionService(this.survivorRepository, this.infectionsRepository);
@@ -49,7 +64,7 @@ class SurvivorsController {
       sex,
       latitude,
       longitude,
-      infected
+      infected,
     });
 
     return response.status(StatusCodes.CREATED).json({ survivorId });
@@ -63,7 +78,7 @@ class SurvivorsController {
       await this.survivorUpdateLocationService.execute({
         survivorId,
         latitude,
-        longitude
+        longitude,
       });
     } catch (e) {
       if (e instanceof AppError) {
@@ -82,7 +97,7 @@ class SurvivorsController {
     try {
       await this.survivorInfectionService.execute({
         reportedBy,
-        infectedId
+        infectedId,
       });
     } catch (e) {
       if (e instanceof AppError) {
@@ -101,7 +116,7 @@ class SurvivorsController {
     try {
       await this.survivorInventoryUpdate.execute({
         survivorId,
-        inventory
+        inventory,
       });
     } catch (e) {
       if (e instanceof AppError) {
@@ -119,7 +134,7 @@ class SurvivorsController {
     try {
       await this.survivorItemRemovalService.execute({
         survivorId,
-        inventory
+        inventory,
       });
     } catch (e) {
       if (e instanceof AppError) {
@@ -128,6 +143,26 @@ class SurvivorsController {
       return response.status(StatusCodes.INTERNAL_SERVER_ERROR);
     }
     return response.status(StatusCodes.NO_CONTENT);
+  }
+
+  public async trade(request: Request, response: Response): Promise<Response> {
+    const survivorId = Number(request.params.survivorId);
+    const { buyerId, pick, pay } = request.body as ITrade;
+
+    try {
+      await this.survivorTradeService.execute({
+        survivorId,
+        buyerId,
+        pick,
+        pay,
+      });
+    } catch (e) {
+      if (e instanceof AppError) {
+        return response.status(e.statusCode).json({ erro: e.message });
+      }
+      return response.status(StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+    return response.status(StatusCodes.OK);
   }
 }
 
