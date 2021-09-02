@@ -23,28 +23,34 @@ class ItemRepository {
 
   /* Find one item by it's name. */
   public async findOne(itemName: string): Promise<Item | null> {
-    const foundSurvivor = await this.connection('items').select(['*']).from('items').where({ itemName }).limit(1);
+    const foundSurvivor: Item[] = await this.connection<Item[]>('items')
+      .select('name', 'type', 'value')
+      .from('items')
+      .where({ itemName })
+      .limit(1);
 
-    let item: Item | null = null;
-    foundSurvivor.forEach(itemInDataBase => {
-      const { name, type, value } = itemInDataBase;
-      item = new Item({ name, type, value });
-    });
-
-    return item;
+    try {
+      const [{ name, type, value }] = foundSurvivor;
+      return new Item({ name, type, value });
+    } catch (e) {
+      return null;
+    }
   }
 
   /* Find one item by it's id. */
   public async findOneById(itemId: number): Promise<Item | null> {
-    const foundSurvivor = await this.connection('items').select(['*']).from('items').where({ itemId }).limit(1);
+    const foundSurvivor: Item[] = await this.connection<Item[]>('items')
+      .select('name', 'type', 'value')
+      .from('items')
+      .where({ itemId })
+      .limit(1);
 
-    let item: Item | null = null;
-    foundSurvivor.forEach(itemInDataBase => {
-      const { name, type, value } = itemInDataBase;
-      item = new Item({ name, type, value });
-    });
-
-    return item;
+    try {
+      const [{ name, type, value }] = foundSurvivor;
+      return new Item({ name, type, value });
+    } catch (e) {
+      return null;
+    }
   }
 }
 

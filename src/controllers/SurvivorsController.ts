@@ -57,15 +57,22 @@ class SurvivorsController {
 
   public async create(request: Request, response: Response): Promise<Response> {
     const { name, age, sex, latitude, longitude, infected }: ISurvivorRequest = request.body;
-
-    const survivorId = await this.survivorCreationService.execute({
-      name,
-      age,
-      sex,
-      latitude,
-      longitude,
-      infected,
-    });
+    let survivorId;
+    try {
+      survivorId = await this.survivorCreationService.execute({
+        name,
+        age,
+        sex,
+        latitude,
+        longitude,
+        infected,
+      });
+    } catch (e) {
+      if (e instanceof AppError) {
+        return response.status(e.statusCode).json({ erro: e.message });
+      }
+      return response.status(StatusCodes.INTERNAL_SERVER_ERROR);
+    }
 
     return response.status(StatusCodes.CREATED).json({ survivorId });
   }
