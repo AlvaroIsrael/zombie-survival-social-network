@@ -13,7 +13,7 @@ class SurvivorCreationService {
   public async execute({ name, age, sex, latitude, longitude, infected }: ISurvivorRequest): Promise<number> {
     const survivorId = await this.survivorRepository.exists({ name, age, sex, latitude, longitude });
 
-    if (!survivorId) {
+    if (survivorId) {
       throw new AppError('Survivor already exists', StatusCodes.CONFLICT);
     }
 
