@@ -80,7 +80,7 @@ describe('SurvivorInfectionService', () => {
 
     const infectionReportsStub = jest
       .spyOn(infectionsRepository, 'infectionReports')
-      .mockReturnValue(Promise.resolve(4));
+      .mockReturnValue(Promise.resolve(1));
 
     try {
       await survivorInfectionService.execute(infection);
@@ -102,10 +102,7 @@ describe('SurvivorInfectionService', () => {
         });
 
         expect(infectionReportsStub).toHaveBeenCalledTimes(1);
-        expect(infectionReportsStub).toHaveBeenCalledWith({
-          reportedBy: infection.reportedBy,
-          infectedId: infection.infectedId,
-        });
+        expect(infectionReportsStub).toHaveBeenCalledWith(infection.infectedId);
 
         expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
         expect(e.message).toEqual('Survivor not infected yet');
