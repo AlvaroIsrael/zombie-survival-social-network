@@ -1,5 +1,5 @@
 export type IItemRequest = {
   name: string;
-  type: string;
+  type: 'agua' | 'comida' | 'medicamento' | 'municao';
   value?: number;
 };
