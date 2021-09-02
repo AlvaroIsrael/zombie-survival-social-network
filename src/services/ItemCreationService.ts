@@ -1,4 +1,5 @@
 import { IItemRequest } from 'interfaces/IItemRequest';
+import { StatusCodes } from 'http-status-codes';
 import ItemRepository from '../repositories/ItemRepository';
 import AppError from '../errors/AppError';
 
@@ -6,7 +7,7 @@ const getItemValue = (type: string): number => {
   let itemValue: number;
 
   switch (type) {
-    case 'água':
+    case 'agua':
       itemValue = 4;
       break;
     case 'comida':
@@ -35,7 +36,7 @@ class ItemCreationService {
     const itemExists = await this.itemRepository.findOne(name);
 
     if (itemExists) {
-      throw new AppError('Item already registered');
+      throw new AppError('Item already registered', StatusCodes.CONFLICT);
     }
 
     return this.itemRepository.create({ name, type, value: itemValue });

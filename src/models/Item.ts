@@ -3,7 +3,7 @@ import { IItemRequest } from 'interfaces/IItemRequest';
 class Item {
   name: string;
 
-  type: string;
+  type: 'agua' | 'comida' | 'medicamento' | 'municao';
 
   value: number;
 
