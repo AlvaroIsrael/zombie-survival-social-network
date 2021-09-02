@@ -1,6 +1,7 @@
 import Knex from 'knex';
 import { ISurvivorRequest } from 'interfaces/ISurvivorRequest';
 import { ISurvivorUpdateLocationRequest } from 'interfaces/ISurvivorUpdateLocationRequest';
+import { ISurvivor } from 'interfaces/ISurvivor';
 import Survivor from '../models/Survivor';
 import connection from '../database/connection';
 
@@ -19,7 +20,7 @@ class SurvivorRepository {
       survivorSex: sex,
       survivorLatitude: latitude,
       survivorLongitude: longitude,
-      survivorInfected: infected
+      survivorInfected: infected,
     });
 
     return survivorId[0];
@@ -39,19 +40,33 @@ class SurvivorRepository {
 
   /* Find ond survivor by it's id. */
   public async findOne(survivorId: number): Promise<Survivor | null> {
-    const foundSurvivor = await this.connection('survivors')
-      .select(['*'])
+    const foundSurvivor: Survivor[] = await this.connection<Survivor[]>('survivors')
+      .select('name', 'age', 'sex', 'latitude', 'longitude', 'infected')
       .from('survivors')
       .where({ survivorId })
       .limit(1);
 
-    let survivor: Survivor | null = null;
-    foundSurvivor.forEach(survivorInDataBase => {
-      const { name, age, sex, latitude, longitude, infected } = survivorInDataBase;
-      survivor = new Survivor({ name, age, sex, latitude, longitude, infected });
-    });
+    try {
+      const [{ name, age, sex, latitude, longitude, infected }] = foundSurvivor;
+      return new Survivor({ name, age, sex, latitude, longitude, infected });
+    } catch (e) {
+      return null;
+    }
+  }
 
-    return survivor;
+  public async exists({ name, age, sex, latitude, longitude }: ISurvivor): Promise<boolean> {
+    const foundSurvivor = await this.connection('survivors')
+      .select('survivorId')
+      .from('survivors')
+      .where({ name, age, sex, latitude, longitude })
+      .limit(1);
+
+    try {
+      const [{ survivorId }] = foundSurvivor;
+      return !!survivorId;
+    } catch (e) {
+      return false;
+    }
   }
 }
 
