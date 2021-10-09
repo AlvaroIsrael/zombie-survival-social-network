@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<SchemaBuilder> {
     tableBuilder.increments('inventoryId').primary();
     tableBuilder.string('survivorId').notNullable().references('survivorId').inTable('survivors');
     tableBuilder.string('itemId').notNullable().references('itemId').inTable('items');
-    tableBuilder.string('iventoryQuantity').notNullable();
+    tableBuilder.string('inventoryQuantity').notNullable();
     tableBuilder.string('createdAt').notNullable().defaultTo(knex.fn.now());
     tableBuilder.string('updatedAt').notNullable().defaultTo(knex.fn.now());
   });
